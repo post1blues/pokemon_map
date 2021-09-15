@@ -1,5 +1,5 @@
 import folium
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from .models import Pokemon, PokemonEntity
 
@@ -57,12 +57,11 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    requested_pokemon = Pokemon.objects.get(id=pokemon_id)
-    pokemon_entities = PokemonEntity.objects.filter(pokemon=requested_pokemon)
+    requested_pokemon = get_object_or_404(Pokemon, id=pokemon_id)
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
-    for pokemon_entity in pokemon_entities:
+    for pokemon_entity in requested_pokemon.pokemon_entities:
         add_pokemon(
             folium_map, pokemon_entity.lat,
             pokemon_entity.lon,
@@ -87,7 +86,7 @@ def show_pokemon(request, pokemon_id):
             'img_url': requested_pokemon.previous_evolution.image.url
         }
 
-    if requested_pokemon.pokemon_entities.first():
+    if requested_pokemon.pokemon_entities:
         next_evolution = requested_pokemon.pokemon_entities.first()
         pokemon['next_evolution'] = {
             'title_ru': next_evolution.title,
