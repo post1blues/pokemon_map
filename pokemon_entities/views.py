@@ -79,8 +79,6 @@ def show_pokemon(request, pokemon_id):
         'description': requested_pokemon.description,
     }
 
-    # breakpoint()
-
     if requested_pokemon.previous_evolution:
         pokemon['previous_evolution'] = {
             'title_ru': requested_pokemon.previous_evolution.title,
